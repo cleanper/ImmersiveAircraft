@@ -27,20 +27,18 @@ public class TrailRenderer {
         Vec3 pos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         Matrix3f matrix = matrices.normal();
 
-        //todo a custom vertex indexing methode would be beneficial here
         for (int i = 1; i < Math.min(trail.entries, trail.size); i++) {
             int pre = ((i + trail.lastIndex - 1) % trail.size) * 7;
             int index = ((i + trail.lastIndex) % trail.size) * 7;
 
-            int a1 = (int) ((1.0f - ((float) i) / trail.size * 255) * trail.buffer[pre + 6]);
-            int a2 = i == (trail.size - 1) ? 0 : (int) ((1.0f - ((float) i + 1) / trail.size * 255) * trail.buffer[index + 6]);
+            float a1 = Math.max(0, (1.0f - ((float) i) / trail.size) * trail.buffer[pre + 6]);
+            float a2 = i == (trail.size - 1) ? 0 : Math.max(0, (1.0f - ((float) i + 1) / trail.size) * trail.buffer[index + 6]);
 
             vertex(trail, lineVertexConsumer, matrix, 0, 0, pre, pos, a1, light);
             vertex(trail, lineVertexConsumer, matrix, 0, 1, pre + 3, pos, a1, light);
             vertex(trail, lineVertexConsumer, matrix, 1, 1, index + 3, pos, a2, light);
             vertex(trail, lineVertexConsumer, matrix, 1, 0, index, pos, a2, light);
 
-            //todo the anti culling here is stupid
             vertex(trail, lineVertexConsumer, matrix, 1, 0, index, pos, a2, light);
             vertex(trail, lineVertexConsumer, matrix, 1, 1, index + 3, pos, a2, light);
             vertex(trail, lineVertexConsumer, matrix, 0, 1, pre + 3, pos, a1, light);
